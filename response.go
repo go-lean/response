@@ -18,6 +18,10 @@ type HttpResponse struct {
 	errMessage  string
 }
 
+func (r *HttpResponse) StatusCode() int {
+	return r.statusCode
+}
+
 func (r *HttpResponse) Payload() interface{} {
 	return r.payload
 }
@@ -36,6 +40,18 @@ func OKPayload(payload interface{}) *HttpResponse {
 
 func OKText(text string) *HttpResponse {
 	return successfulResponse(http.StatusOK, text, textPayload)
+}
+
+func Created(payload interface{}) *HttpResponse {
+	return successfulResponse(http.StatusCreated, payload, jsonPayload)
+}
+
+func Accepted(payload interface{}) *HttpResponse {
+	return successfulResponse(http.StatusAccepted, payload, jsonPayload)
+}
+
+func NoContent() *HttpResponse {
+	return successfulResponse(http.StatusNoContent, nil, emptyPayload)
 }
 
 func BadRequest(err error, publicMessage string) *HttpResponse {
