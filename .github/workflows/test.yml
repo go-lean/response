@@ -15,4 +15,4 @@ jobs:
         with:
           go-version: 1.18
       - name: test
-        run: cd response && go test -v -cover ./
+        run: go test -v -cover ./
