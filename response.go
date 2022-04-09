@@ -6,6 +6,7 @@ const (
 	PayloadEmpty PayloadType = iota
 	PayloadText
 	PayloadJSON
+	PayloadStreaming
 )
 
 type HttpResponse struct {

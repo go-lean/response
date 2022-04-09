@@ -6,6 +6,14 @@ func New(statusCode int) *PartialCustom {
 	return &PartialCustom{Partial{&HttpResponse{statusCode: statusCode}}}
 }
 
+func Streaming(statusCode int, streamer Streamer) *HttpResponse {
+	return &HttpResponse{
+		statusCode:  statusCode,
+		payload:     streamer,
+		payloadType: PayloadStreaming,
+	}
+}
+
 // region 2xx
 
 func OK() *Partial {

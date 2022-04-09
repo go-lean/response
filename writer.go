@@ -8,6 +8,7 @@ import (
 
 var (
 	ErrUnsupportedPayloadType = errors.New("unsupported payload type")
+	ErrNotAStreamer           = errors.New("provided payload is not a streamer")
 )
 
 const (
@@ -48,6 +49,8 @@ func (w *Writer) Write(response *HttpResponse, writer http.ResponseWriter) error
 		return w.writeText(response, writer)
 	case PayloadJSON:
 		return w.writeJSON(response, writer)
+	case PayloadStreaming:
+		return w.writeStream(response, writer)
 	default:
 		return ErrUnsupportedPayloadType
 	}
@@ -77,4 +80,23 @@ func (w *Writer) writeJSON(response *HttpResponse, writer http.ResponseWriter) e
 	writer.WriteHeader(response.statusCode)
 
 	return json.NewEncoder(writer).Encode(response.payload)
+}
+
+func (w *Writer) writeStream(response *HttpResponse, writer http.ResponseWriter) error {
+	stream := NewStream(writer)
+	streamer, ok := response.payload.(Streamer)
+	if ok == false {
+		return ErrNotAStreamer
+	}
+
+	writer.Header().Set("X-Content-Type-Options", "nosniff")
+	writer.Header().Set("Connection", "Keep-Alive")
+	writer.WriteHeader(response.statusCode)
+
+	if err := streamer.Stream(stream); err != nil {
+		return err
+	}
+
+	stream.Flush()
+	return nil
 }

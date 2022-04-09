@@ -10,14 +10,14 @@ import (
 
 func Test_CustomWithError(t *testing.T) {
 	resp := response.New(http.StatusTeapot).
-		WithError(errors.New("baba"), "dodo")
+		WithError(errors.New("baba"), "you")
 
 	require.Equal(t, http.StatusTeapot, resp.StatusCode())
 	require.Nil(t, resp.Payload())
 	require.Error(t, resp.Error())
 	require.Contains(t, resp.Error().Error(), "baba")
-	require.NotContains(t, resp.Error().Error(), "dodo")
-	require.Contains(t, resp.ErrorMessage(), "dodo")
+	require.NotContains(t, resp.Error().Error(), "you")
+	require.Contains(t, resp.ErrorMessage(), "you")
 	require.NotContains(t, resp.ErrorMessage(), "baba")
 }
 
@@ -102,17 +102,17 @@ func Test_Errors(t *testing.T) {
 		c int
 		r *response.HttpResponse
 	}{
-		{http.StatusBadRequest, response.BadRequest(errors.New("baba"), "dodo")},
-		{http.StatusUnauthorized, response.Unauthorized(errors.New("baba"), "dodo")},
-		{http.StatusPaymentRequired, response.PaymentRequired(errors.New("baba"), "dodo")},
-		{http.StatusForbidden, response.Forbidden(errors.New("baba"), "dodo")},
-		{http.StatusNotFound, response.NotFound(errors.New("baba"), "dodo")},
-		{http.StatusNotAcceptable, response.NotAcceptable(errors.New("baba"), "dodo")},
-		{http.StatusConflict, response.Conflict(errors.New("baba"), "dodo")},
-		{http.StatusInternalServerError, response.InternalServerError(errors.New("baba"), "dodo")},
-		{http.StatusNotImplemented, response.NotImplemented(errors.New("baba"), "dodo")},
-		{http.StatusServiceUnavailable, response.ServiceUnavailable(errors.New("baba"), "dodo")},
-		{http.StatusInsufficientStorage, response.InsufficientStorage(errors.New("baba"), "dodo")},
+		{http.StatusBadRequest, response.BadRequest(errors.New("baba"), "you")},
+		{http.StatusUnauthorized, response.Unauthorized(errors.New("baba"), "you")},
+		{http.StatusPaymentRequired, response.PaymentRequired(errors.New("baba"), "you")},
+		{http.StatusForbidden, response.Forbidden(errors.New("baba"), "you")},
+		{http.StatusNotFound, response.NotFound(errors.New("baba"), "you")},
+		{http.StatusNotAcceptable, response.NotAcceptable(errors.New("baba"), "you")},
+		{http.StatusConflict, response.Conflict(errors.New("baba"), "you")},
+		{http.StatusInternalServerError, response.InternalServerError(errors.New("baba"), "you")},
+		{http.StatusNotImplemented, response.NotImplemented(errors.New("baba"), "you")},
+		{http.StatusServiceUnavailable, response.ServiceUnavailable(errors.New("baba"), "you")},
+		{http.StatusInsufficientStorage, response.InsufficientStorage(errors.New("baba"), "you")},
 	}
 
 	for _, tc := range tests {
@@ -120,8 +120,8 @@ func Test_Errors(t *testing.T) {
 		require.Error(t, tc.r.Error())
 		require.NotEmpty(t, tc.r.ErrorMessage())
 		require.Contains(t, tc.r.Error().Error(), "baba")
-		require.NotContains(t, tc.r.Error().Error(), "dodo")
-		require.Contains(t, tc.r.ErrorMessage(), "dodo")
+		require.NotContains(t, tc.r.Error().Error(), "you")
+		require.Contains(t, tc.r.ErrorMessage(), "you")
 		require.NotContains(t, tc.r.ErrorMessage(), "baba")
 	}
 }

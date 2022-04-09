@@ -25,14 +25,14 @@ func Test_CustomErrorWriter(t *testing.T) {
 
 		return json.NewEncoder(writer).Encode(data)
 	}
-	resp := response.BadRequest(errors.New("baba"), "dodo")
+	resp := response.BadRequest(errors.New("baba"), "you")
 
 	err := writer.Write(resp, w)
 
 	require.Nil(t, err)
 	var data testData
 	require.Nil(t, json.NewDecoder(w.Body).Decode(&data))
-	require.Contains(t, data.Error, "dodo", w.Body.String())
+	require.Contains(t, data.Error, "you", w.Body.String())
 	require.Equal(t, http.StatusBadRequest, data.StatusCode)
 }
 
@@ -76,14 +76,14 @@ func Test_WritePayload(t *testing.T) {
 func Test_WriteError(t *testing.T) {
 	w := httptest.NewRecorder()
 	writer := response.NewWriter()
-	resp := response.BadRequest(errors.New("baba"), "dodo")
+	resp := response.BadRequest(errors.New("baba"), "you")
 
 	err := writer.Write(resp, w)
 
 	require.Nil(t, err)
 	require.Equal(t, http.StatusBadRequest, w.Code)
 	require.Contains(t, w.Header().Get("Content-Type"), "text/plain")
-	require.Contains(t, w.Body.String(), "dodo")
+	require.Contains(t, w.Body.String(), "you")
 	require.NotContains(t, w.Body.String(), "baba")
 }
 
