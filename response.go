@@ -1,16 +1,16 @@
 package response
 
-type payloadType int
+type PayloadType int
 
 const (
-	emptyPayload payloadType = iota
-	textPayload
-	jsonPayload
+	Empty PayloadType = iota
+	Text
+	JSON
 )
 
 type HttpResponse struct {
 	statusCode  int
-	payloadType payloadType
+	payloadType PayloadType
 	payload     interface{}
 	logError    error
 	errMessage  string
@@ -22,6 +22,10 @@ func (r *HttpResponse) StatusCode() int {
 
 func (r *HttpResponse) Payload() interface{} {
 	return r.payload
+}
+
+func (r *HttpResponse) PayloadType() PayloadType {
+	return r.payloadType
 }
 
 func (r *HttpResponse) Error() error {

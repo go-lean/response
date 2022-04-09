@@ -17,7 +17,7 @@ func Accepted() *Partial {
 }
 
 func NoContent() *HttpResponse {
-	return &HttpResponse{statusCode: http.StatusNoContent, payloadType: emptyPayload}
+	return &HttpResponse{statusCode: http.StatusNoContent, payloadType: Empty}
 }
 
 // endregion 2xx

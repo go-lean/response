@@ -10,21 +10,21 @@ type PartialCustom struct {
 
 func (p *Partial) WithJSON(payload interface{}) *HttpResponse {
 	p.response.payload = payload
-	p.response.payloadType = jsonPayload
+	p.response.payloadType = JSON
 
 	return p.response
 }
 
 func (p *Partial) WithText(text string) *HttpResponse {
 	p.response.payload = text
-	p.response.payloadType = textPayload
+	p.response.payloadType = Text
 
 	return p.response
 }
 
 func (p *PartialCustom) WithError(err error, publicMessage string) *HttpResponse {
 	p.response.payload = nil
-	p.response.payloadType = emptyPayload
+	p.response.payloadType = Empty
 	p.response.logError = err
 	p.response.errMessage = publicMessage
 
