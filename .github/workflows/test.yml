@@ -14,8 +14,18 @@ jobs:
       - uses: actions/setup-go@v2.1.3
         with:
           go-version: 1.18
+      - name: install dependencies
+        run: |
+          go version
+          go get -u golang.org/x/lint/golint
+      - name: build
+        run: go build .
       - name: test
         run: go test -v -coverprofile=coverage.txt -covermode=atomic ./...
       - name: upload coverage
         uses: codecov/codecov-action@v2
+      - name: vet and lint
+        run: |
+          go vet .
+          golint -set_exit_status=1 .
 
