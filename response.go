@@ -3,9 +3,9 @@ package response
 type PayloadType int
 
 const (
-	Empty PayloadType = iota
-	Text
-	JSON
+	PayloadEmpty PayloadType = iota
+	PayloadText
+	PayloadJSON
 )
 
 type HttpResponse struct {
@@ -34,8 +34,4 @@ func (r *HttpResponse) Error() error {
 
 func (r *HttpResponse) ErrorMessage() string {
 	return r.errMessage
-}
-
-func New(statusCode int) *PartialCustom {
-	return &PartialCustom{Partial{&HttpResponse{statusCode: statusCode}}}
 }

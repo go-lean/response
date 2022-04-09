@@ -41,12 +41,12 @@ func (w *Writer) Write(response *HttpResponse, writer http.ResponseWriter) error
 	}
 
 	switch response.payloadType {
-	case Empty:
+	case PayloadEmpty:
 		writer.WriteHeader(response.statusCode)
 		return nil
-	case Text:
+	case PayloadText:
 		return w.writeText(response, writer)
-	case JSON:
+	case PayloadJSON:
 		return w.writeJSON(response, writer)
 	default:
 		return ErrUnsupportedPayloadType

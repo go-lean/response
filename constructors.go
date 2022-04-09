@@ -2,6 +2,10 @@ package response
 
 import "net/http"
 
+func New(statusCode int) *PartialCustom {
+	return &PartialCustom{Partial{&HttpResponse{statusCode: statusCode}}}
+}
+
 // region 2xx
 
 func OK() *Partial {
@@ -17,7 +21,7 @@ func Accepted() *Partial {
 }
 
 func NoContent() *HttpResponse {
-	return &HttpResponse{statusCode: http.StatusNoContent, payloadType: Empty}
+	return &HttpResponse{statusCode: http.StatusNoContent, payloadType: PayloadEmpty}
 }
 
 // endregion 2xx

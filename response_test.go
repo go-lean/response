@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func Test_Custom(t *testing.T) {
+func Test_CustomWithError(t *testing.T) {
 	resp := response.New(http.StatusTeapot).
 		WithError(errors.New("baba"), "dodo")
 
@@ -21,6 +21,16 @@ func Test_Custom(t *testing.T) {
 	require.NotContains(t, resp.ErrorMessage(), "baba")
 }
 
+func Test_CustomWithoutContent(t *testing.T) {
+	resp := response.New(http.StatusTeapot).
+		WithoutContent()
+
+	require.Equal(t, http.StatusTeapot, resp.StatusCode())
+	require.Nil(t, resp.Payload())
+	require.Nil(t, resp.Error())
+	require.Equal(t, response.PayloadEmpty, resp.PayloadType())
+}
+
 func Test_OKPayload(t *testing.T) {
 	type data struct {
 		data string
@@ -31,7 +41,7 @@ func Test_OKPayload(t *testing.T) {
 	respPayload, ok := resp.Payload().(data)
 
 	require.Equal(t, http.StatusOK, resp.StatusCode())
-	require.Equal(t, response.JSON, resp.PayloadType())
+	require.Equal(t, response.PayloadJSON, resp.PayloadType())
 	require.True(t, ok)
 	require.Equal(t, "baba", respPayload.data)
 	require.Nil(t, resp.Error())
@@ -43,7 +53,7 @@ func Test_OKText(t *testing.T) {
 	respPayload, ok := resp.Payload().(string)
 
 	require.Equal(t, http.StatusOK, resp.StatusCode())
-	require.Equal(t, response.Text, resp.PayloadType())
+	require.Equal(t, response.PayloadText, resp.PayloadType())
 	require.True(t, ok)
 	require.Nil(t, resp.Error())
 	require.Empty(t, resp.ErrorMessage())
