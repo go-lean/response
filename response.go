@@ -1,7 +1,5 @@
 package response
 
-import "net/http"
-
 type payloadType int
 
 const (
@@ -34,46 +32,6 @@ func (r *HttpResponse) ErrorMessage() string {
 	return r.errMessage
 }
 
-func OKPayload(payload interface{}) *HttpResponse {
-	return successfulResponse(http.StatusOK, payload, jsonPayload)
-}
-
-func OKText(text string) *HttpResponse {
-	return successfulResponse(http.StatusOK, text, textPayload)
-}
-
-func Created(payload interface{}) *HttpResponse {
-	return successfulResponse(http.StatusCreated, payload, jsonPayload)
-}
-
-func Accepted(payload interface{}) *HttpResponse {
-	return successfulResponse(http.StatusAccepted, payload, jsonPayload)
-}
-
-func NoContent() *HttpResponse {
-	return successfulResponse(http.StatusNoContent, nil, emptyPayload)
-}
-
-func BadRequest(err error, publicMessage string) *HttpResponse {
-	return errorResponse(http.StatusBadRequest, err, publicMessage)
-}
-
-func successfulResponse(statusCode int, payload interface{}, payloadType payloadType) *HttpResponse {
-	return &HttpResponse{
-		statusCode,
-		payloadType,
-		payload,
-		nil,
-		"",
-	}
-}
-
-func errorResponse(statusCode int, err error, publicErrMessage string) *HttpResponse {
-	return &HttpResponse{
-		statusCode,
-		emptyPayload,
-		nil,
-		err,
-		publicErrMessage,
-	}
+func New(statusCode int) *PartialCustom {
+	return &PartialCustom{Partial{&HttpResponse{statusCode: statusCode}}}
 }
