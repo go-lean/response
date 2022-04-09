@@ -10,7 +10,7 @@ import (
 )
 
 type streamer struct {
-	fun func(*response.Stream) error
+	fun func(response.StreamWriter) error
 }
 
 type dudWriter struct{}
@@ -27,14 +27,14 @@ func (d *dudWriter) WriteHeader(_ int) {
 	// stargaze
 }
 
-func (s *streamer) Stream(stream *response.Stream) error {
+func (s *streamer) Write(stream response.StreamWriter) error {
 	return s.fun(stream)
 }
 
 func TestStream(t *testing.T) {
 	w := httptest.NewRecorder()
 
-	str := &streamer{fun: func(stream *response.Stream) error {
+	str := &streamer{fun: func(stream response.StreamWriter) error {
 		tests := []struct {
 			addition string
 			expected string
@@ -54,7 +54,7 @@ func TestStream(t *testing.T) {
 		return nil
 	}}
 
-	resp := response.Streaming(http.StatusOK, str)
+	resp := response.OK().WithStreamable(str, "application/json")
 	writer := response.NewWriter()
 
 	err := writer.Write(resp, w)
@@ -64,12 +64,12 @@ func TestStream(t *testing.T) {
 }
 
 func TestStreamError(t *testing.T) {
-	str := &streamer{fun: func(stream *response.Stream) error {
+	str := &streamer{fun: func(stream response.StreamWriter) error {
 		stream.Flush()
 		return errors.New("baba")
 	}}
 
-	resp := response.Streaming(http.StatusOK, str)
+	resp := response.OK().WithStreamable(str, "application/json")
 	w := httptest.NewRecorder()
 	writer := response.NewWriter()
 
@@ -80,23 +80,23 @@ func TestStreamError(t *testing.T) {
 }
 
 func TestStreamNilStreamer(t *testing.T) {
-	resp := response.Streaming(http.StatusOK, nil)
+	resp := response.OK().WithStreamable(nil, "application/json")
 	w := httptest.NewRecorder()
 	writer := response.NewWriter()
 
 	err := writer.Write(resp, w)
 
 	require.Error(t, err)
-	require.Contains(t, err.Error(), "streamer")
+	require.Contains(t, err.Error(), "streamable")
 }
 
 func TestStreamNonFlusherWriter(t *testing.T) {
-	str := &streamer{fun: func(stream *response.Stream) error {
+	str := &streamer{fun: func(stream response.StreamWriter) error {
 		stream.Flush()
 		return nil
 	}}
 
-	resp := response.Streaming(http.StatusOK, str)
+	resp := response.OK().WithStreamable(str, "application/json")
 	w := &dudWriter{}
 	writer := response.NewWriter()
 

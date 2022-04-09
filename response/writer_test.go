@@ -3,6 +3,7 @@ package response_test
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/go-lean/response"
 	"github.com/stretchr/testify/require"
 	"net/http"
@@ -69,6 +70,53 @@ func Test_WritePayload(t *testing.T) {
 	require.Nil(t, json.NewDecoder(w.Body).Decode(&respPayload))
 	require.Equal(t, "baba", respPayload.Data)
 	require.Equal(t, 201, respPayload.Code)
+	require.Equal(t, http.StatusCreated, w.Code)
+	require.Contains(t, w.Header().Get("Content-Type"), "json")
+}
+
+type streamable struct {
+	TextData string
+}
+
+func (s *streamable) Write(writer response.StreamWriter) error {
+	_, err := writer.Write([]byte(fmt.Sprintf("{%q:%q}", "TextData", s.TextData)))
+	return err
+}
+
+func Test_WriteStreamable(t *testing.T) {
+	data := streamable{
+		TextData: "baba",
+	}
+
+	w := httptest.NewRecorder()
+	writer := response.NewWriter()
+	resp := response.Created().WithJSON(&data)
+
+	err := writer.Write(resp, w)
+
+	require.Nil(t, err)
+	var respPayload streamable
+	require.Nil(t, json.NewDecoder(w.Body).Decode(&respPayload), w.Body.String())
+	require.Equal(t, "baba", respPayload.TextData)
+	require.Equal(t, http.StatusCreated, w.Code)
+	require.Contains(t, w.Header().Get("Content-Type"), "json")
+}
+
+func Test_WriteJSONStreamable(t *testing.T) {
+	data := streamable{
+		TextData: "baba",
+	}
+
+	w := httptest.NewRecorder()
+	writer := response.NewWriter()
+	resp := response.Created().WithJSON(&data)
+
+	err := writer.Write(resp, w)
+
+	require.Nil(t, err)
+	var respPayload streamable
+	require.Nil(t, json.NewDecoder(w.Body).Decode(&respPayload), w.Body.String())
+	require.Equal(t, "baba", respPayload.TextData)
 	require.Equal(t, http.StatusCreated, w.Code)
 	require.Contains(t, w.Header().Get("Content-Type"), "json")
 }

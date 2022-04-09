@@ -6,13 +6,14 @@ const (
 	PayloadEmpty PayloadType = iota
 	PayloadText
 	PayloadJSON
-	PayloadStreaming
+	PayloadStream
 )
 
 type HttpResponse struct {
 	statusCode  int
 	payloadType PayloadType
 	payload     interface{}
+	contentType string
 	logError    error
 	errMessage  string
 }

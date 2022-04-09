@@ -22,6 +22,14 @@ func (p *Partial) WithText(text string) *HttpResponse {
 	return p.response
 }
 
+func (p *Partial) WithStreamable(streamable Streamable, contentType string) *HttpResponse {
+	p.response.payload = streamable
+	p.response.payloadType = PayloadStream
+	p.response.contentType = contentType
+
+	return p.response
+}
+
 func (p *PartialCustom) WithoutContent() *HttpResponse {
 	p.response.payload = nil
 	p.response.payloadType = PayloadEmpty

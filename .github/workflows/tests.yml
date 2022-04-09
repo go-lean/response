@@ -15,9 +15,9 @@ jobs:
         with:
           go-version: 1.18
       - name: build
-        run: go build .
+        run: cd response && go build .
       - name: test
-        run: go test -v -coverprofile=coverage.txt -covermode=atomic ./...
+        run: cd response && go test -v -coverprofile=coverage.txt -covermode=atomic ./...
       - name: upload coverage
         uses: codecov/codecov-action@v2
       - name: vet
