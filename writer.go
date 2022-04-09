@@ -83,7 +83,6 @@ func (w *Writer) writeJSON(response *HttpResponse, writer http.ResponseWriter) e
 }
 
 func (w *Writer) writeStream(response *HttpResponse, writer http.ResponseWriter) error {
-	stream := NewStream(writer)
 	streamer, ok := response.payload.(Streamer)
 	if ok == false {
 		return ErrNotAStreamer
@@ -93,6 +92,7 @@ func (w *Writer) writeStream(response *HttpResponse, writer http.ResponseWriter)
 	writer.Header().Set("Connection", "Keep-Alive")
 	writer.WriteHeader(response.statusCode)
 
+	stream := NewStream(writer)
 	if err := streamer.Stream(stream); err != nil {
 		return err
 	}

@@ -45,7 +45,7 @@ func TestStream(t *testing.T) {
 		}
 
 		for _, tc := range tests {
-			_, err := stream.WriteString(tc.addition)
+			_, err := stream.Write([]byte(tc.addition))
 			require.Nil(t, err)
 			require.Equal(t, tc.expected, w.Body.String())
 			stream.Flush()

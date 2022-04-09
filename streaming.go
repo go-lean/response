@@ -16,15 +16,11 @@ func (d *dudFlusher) Flush() {
 	// stargaze
 }
 
-func (s *Stream) WriteString(value string) (int, error) {
-	return s.Write([]byte(value))
-}
-
 func (s *Stream) Flush() {
 	s.flusher.Flush()
 }
 
-func NewStream(w http.ResponseWriter) *Stream {
+func NewStream(w io.Writer) *Stream {
 	flusher, ok := w.(http.Flusher)
 	if ok == false {
 		flusher = &dudFlusher{}
